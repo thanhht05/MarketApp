@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UploadService {
-    private final String UPLOAD_DIR = "D:/marketUpload/image/";
+    private final String UPLOAD_DIR = "/tmp/marketUpload/image/";
 
     public String handleUpLoadFile(MultipartFile file, String targetFolder) throws IOException {
         if (file.isEmpty())
