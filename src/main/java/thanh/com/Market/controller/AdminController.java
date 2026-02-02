@@ -32,15 +32,19 @@ public class AdminController {
     }
 
     @PostMapping("/create")
-    public String postMethodName(@ModelAttribute Product product, @RequestParam("imageFile") MultipartFile file)
-            throws IOException {
+    public String postMethodName(
+            @ModelAttribute Product product,
+            @RequestParam("imageFile") MultipartFile file) throws IOException {
 
+        // 👉 img bây giờ là URL Cloudinary
         String img = this.uploadService.handleUpLoadFile(file, "image");
         product.setImg(img);
+
         String nameAscii = this.productService.removeAccent(product.getName());
         product.setNameAscii(nameAscii);
 
         this.productService.createProduct(product);
+
         ProductCache.getInstance()
                 .loadFromDB(productService.getAll());
 

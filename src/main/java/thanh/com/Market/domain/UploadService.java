@@ -2,32 +2,30 @@ package thanh.com.Market.domain;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+
 @Service
 public class UploadService {
-    @Value("${upoadDir}")
-    private String UPLOAD_DIR;
 
-    public String handleUpLoadFile(MultipartFile file, String targetFolder) throws IOException {
-        if (file.isEmpty())
-            return "";
+    @Autowired
+    private Cloudinary cloudinary;
 
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+    public String handleUpLoadFile(MultipartFile file, String folder) throws IOException {
 
-        File uploadDir = new File(UPLOAD_DIR);
+        Map uploadResult = cloudinary.uploader().upload(
+                file.getBytes(),
+                ObjectUtils.asMap(
+                        "folder", folder));
 
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-
-        File destination = new File(uploadDir, fileName);
-        file.transferTo(destination);
-
-        return "images/" + fileName;
+        // URL HTTPS
+        return uploadResult.get("secure_url").toString();
     }
-
 }
