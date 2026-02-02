@@ -1,6 +1,7 @@
 package thanh.com.Market.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,15 +41,21 @@ public class AdminController {
         String img = this.uploadService.handleUpLoadFile(file, "image");
         product.setImg(img);
 
-        String nameAscii = this.productService.removeAccent(product.getName());
-        product.setNameAscii(nameAscii);
-
         this.productService.createProduct(product);
 
         ProductCache.getInstance()
                 .loadFromDB(productService.getAll());
 
         return "redirect:/";
+    }
+
+    @GetMapping("/admin")
+    public String handleGetAllProducts(Model model) {
+        List<Product> ds = productService.getAllProductsFromCache();
+
+        model.addAttribute("ds", ds);
+
+        return "admin-list";
     }
 
 }

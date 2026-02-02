@@ -17,7 +17,6 @@ public class Product {
     @Column(length = 500)
     private String img;
     private int price;
-    private String nameAscii;
 
     public long getId() {
         return id;
@@ -49,14 +48,6 @@ public class Product {
 
     public void setPrice(int price) {
         this.price = price;
-    }
-
-    public String getNameAscii() {
-        return nameAscii;
-    }
-
-    public void setNameAscii(String nameAscii) {
-        this.nameAscii = nameAscii;
     }
 
 }
