@@ -14,6 +14,7 @@ import thanh.com.Market.domain.UploadService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,6 +57,26 @@ public class AdminController {
         model.addAttribute("ds", ds);
 
         return "admin-list";
+    }
+
+    @PostMapping("/admin/update/{id}")
+    public String update(@PathVariable("id") Long id, @RequestParam("price") Integer price) {
+        Product p = this.productService.getById(id);
+
+        if (p != null) {
+            p.setPrice(price);
+            this.productService.save(p);
+        }
+
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/admin/products/delete/{id}")
+    public String delete(@PathVariable("id") Long id) {
+        Product p = this.productService.getById(id);
+        this.productService.delete(p);
+        return "redirect:/admin";
+
     }
 
 }

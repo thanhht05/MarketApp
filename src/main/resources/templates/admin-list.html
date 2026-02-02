@@ -2,72 +2,133 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
-    <title>Admin - Quản lý sản phẩm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Danh sách sản phẩm</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <style>
+      body {
+        background-color: #f8f9fa;
+      }
       .product-img {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
         object-fit: cover;
-        border-radius: 5px;
+        border-radius: 4px;
+      }
+
+      /* CSS để tối ưu trên điện thoại */
+      @media (max-width: 576px) {
+        .hide-on-mobile {
+          display: none;
+        }
+        .table-responsive {
+          border: 0;
+        }
+        .btn-sm-custom {
+          padding: 0.25rem 0.4rem;
+          font-size: 0.75rem;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="container mt-5">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Danh sách sản phẩm</h2>
-        <a href="/admin/products/add" class="btn btn-primary"
-          >Thêm sản phẩm mới</a
+    <nav class="navbar navbar-dark bg-primary shadow-sm mb-4">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="/admin/products"
+          >ADMIN DASHBOARD</a
         >
+        <a href="/" class="btn btn-outline-light btn-sm"> ← Về trang chủ </a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="card shadow-sm border-0">
+        <div
+          class="card-header bg-white py-3 d-flex justify-content-between align-items-center"
+        >
+          <h6 class="mb-0 fw-bold">QUẢN LÝ SẢN PHẨM</h6>
+          <a href="/admin/products/add" class="btn btn-success btn-sm"
+            >+ Thêm mới</a
+          >
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="hide-on-mobile" style="width: 80px">ID</th>
+                  <th style="width: 70px">Ảnh</th>
+                  <th>Tên sản phẩm</th>
+                  <th class="hide-on-mobile">Giá</th>
+                  <th class="text-end px-4">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="p : ${ds}">
+                  <td th:text="${p.id}" class="hide-on-mobile text-muted">
+                    #1
+                  </td>
+                  <td>
+                    <img th:src="${p.img}" class="product-img border" />
+                  </td>
+                  <td>
+                    <div class="fw-bold text-dark" th:text="${p.name}">
+                      Sản phẩm mẫu
+                    </div>
+                    <div class="d-sm-none mt-1">
+                      <form
+                        th:action="@{/admin/update/{id}(id=${p.id})}"
+                        method="post"
+                        class="d-flex align-items-center gap-1"
+                      >
+                        <input
+                          type="number"
+                          name="price"
+                          th:value="${p.price}"
+                          class="form-control form-control-sm"
+                          style="width: 100px"
+                        />
+
+                        <span class="fw-bold text-danger">đ</span>
+                      </form>
+                    </div>
+                  </td>
+                  <td class="hide-on-mobile fw-bold text-danger">
+                    <span
+                      th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')}"
+                    ></span
+                    >đ
+                  </td>
+                  <td class="text-end px-4">
+                    <div class="btn-group">
+                      <a
+                        th:href="@{/admin/products/edit/{id}(id=${p.id})}"
+                        class="btn btn-outline-primary btn-sm btn-sm-custom"
+                        >Sửa</a
+                      >
+                      <a
+                        th:href="@{/admin/products/delete/{id}(id=${p.id})}"
+                        class="btn btn-outline-danger btn-sm btn-sm-custom"
+                        >Xóa</a
+                      >
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
-      <table class="table table-hover table-bordered">
-        <thead class="table-dark">
-          <tr>
-            <th>ID</th>
-            <th>Hình ảnh</th>
-            <th>Tên sản phẩm</th>
-            <th>Giá</th>
-            <th>Thao tác</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="p : ${ds}">
-            <td th:text="${p.id}">1</td>
-            <td>
-              <img th:src="${p.img}" alt="product img" class="product-img" />
-            </td>
-            <td th:text="${p.name}">Tên sản phẩm</td>
-            <td
-              th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"
-            >
-              0 đ
-            </td>
-            <td>
-              <a
-                th:href="@{/admin/products/edit/{id}(id=${p.id})}"
-                class="btn btn-sm btn-warning"
-                >Sửa</a
-              >
-              <a
-                th:href="@{/admin/products/delete/{id}(id=${p.id})}"
-                class="btn btn-sm btn-danger"
-                onclick="return confirm('Bạn có chắc chắn muốn xóa?');"
-                >Xóa</a
-              >
-            </td>
-          </tr>
-          <tr th:if="${#lists.isEmpty(ds)}">
-            <td colspan="5" class="text-center">
-              Chưa có sản phẩm nào trong kho.
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div th:if="${#lists.isEmpty(ds)}" class="text-center mt-5">
+        <p class="text-muted">Chưa có sản phẩm nào trong kho dữ liệu.</p>
+      </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

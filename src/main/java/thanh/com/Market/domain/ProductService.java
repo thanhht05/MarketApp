@@ -23,6 +23,10 @@ public class ProductService {
 
     }
 
+    public void save(Product product) {
+        this.productRepository.save(product);
+    }
+
     public Product getById(Long id) {
         Optional<Product> p = this.productRepository.findById(id);
         if (p.isPresent()) {
@@ -31,8 +35,16 @@ public class ProductService {
         return null;
     }
 
+    public void delete(Product product) {
+        this.productRepository.delete(product);
+    }
+
     public void createProduct(Product product) {
         this.productRepository.save(product);
+    }
+
+    public void updateProduct(Product product) {
+
     }
 
     public String removeAccent(String s) {
