@@ -52,7 +52,7 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String handleGetAllProducts(Model model) {
-        List<Product> ds = productService.getAllProductsFromCache();
+        List<Product> ds = productService.getAll();
 
         model.addAttribute("ds", ds);
 
