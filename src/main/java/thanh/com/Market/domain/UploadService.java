@@ -3,12 +3,14 @@ package thanh.com.Market.domain;
 import java.io.File;
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UploadService {
-    private final String UPLOAD_DIR = "/tmp/marketUpload/image/";
+    @Value("${upoadDir}")
+    private String UPLOAD_DIR;
 
     public String handleUpLoadFile(MultipartFile file, String targetFolder) throws IOException {
         if (file.isEmpty())
