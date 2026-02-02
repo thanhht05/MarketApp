@@ -37,31 +37,29 @@ public class ProductService {
 
     public void delete(Product product) {
         this.productRepository.delete(product);
+        reloadCache();
     }
 
     public void createProduct(Product product) {
         this.productRepository.save(product);
-    }
-
-    public void updateProduct(Product product) {
+        reloadCache();
 
     }
 
-    public String removeAccent(String s) {
-        if (s == null)
-            return "";
-        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
-        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(temp)
-                .replaceAll("")
-                .replace("đ", "d")
-                .replace("Đ", "D")
-                .toLowerCase()
-                .trim();
+    public void updateProduct(Long id, Integer price) {
+        Product p = this.getById(id);
+        p.setPrice(price);
+        save(p);
+        reloadCache();
     }
 
     public List<Product> getAllProductsFromCache() {
         return ProductCache.getInstance().getAll();
+    }
+
+    private void reloadCache() {
+        ProductCache.getInstance()
+                .loadFromDB(productRepository.findAll());
     }
 
 }

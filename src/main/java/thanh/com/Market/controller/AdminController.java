@@ -44,15 +44,12 @@ public class AdminController {
 
         this.productService.createProduct(product);
 
-        ProductCache.getInstance()
-                .loadFromDB(productService.getAll());
-
         return "redirect:/";
     }
 
     @GetMapping("/admin")
     public String handleGetAllProducts(Model model) {
-        List<Product> ds = productService.getAll();
+        List<Product> ds = productService.getAllProductsFromCache();
 
         model.addAttribute("ds", ds);
 
@@ -61,12 +58,7 @@ public class AdminController {
 
     @PostMapping("/admin/update/{id}")
     public String update(@PathVariable("id") Long id, @RequestParam("price") Integer price) {
-        Product p = this.productService.getById(id);
-
-        if (p != null) {
-            p.setPrice(price);
-            this.productService.save(p);
-        }
+        this.productService.updateProduct(id, price);
 
         return "redirect:/admin";
     }
