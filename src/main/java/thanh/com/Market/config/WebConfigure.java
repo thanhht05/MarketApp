@@ -7,15 +7,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfigure implements WebMvcConfigurer {
-
     @Value("${upoadDir}")
     private String uploadDir;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String location = "file:" + uploadDir + (uploadDir.endsWith("/") ? "" : "/");
+        registry.addResourceHandler("/images/**") // URL client gọi
+                .addResourceLocations(uploadDir); // Folder/file thật map với URL ciletn gọi
 
-        registry.addResourceHandler("/images/**")
-                .addResourceLocations(location);
     }
 }
